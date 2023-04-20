@@ -65,9 +65,7 @@ jobs:
 
   java-sdk-cluster-memory-0:
     if: ${{ github.event.inputs.EXEC_TEST_TYPE == 'all' || github.event.inputs.EXEC_TEST_TYPE == 'java' }}
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/4paradigm/hybridsql:latest
+    runs-on: self-hosted
     env:
       OS: linux
     steps:
