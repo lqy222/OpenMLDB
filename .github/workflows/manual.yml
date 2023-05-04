@@ -31,8 +31,8 @@ jobs:
       - name: Send Email
         uses: dawidd6/action-send-mail@master
         with:
-          server_address: smtp-mail.outlook.com
-          server_port: 587
+          server_address: smtp.qq.com
+          server_port: 465
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: OpenMLDB Memory Task Test
