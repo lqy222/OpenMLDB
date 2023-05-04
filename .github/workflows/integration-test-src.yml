@@ -95,8 +95,8 @@ jobs:
         if: ${{ failure() }}
         uses: dawidd6/action-send-mail@master
         with:
-          server_address: smtp.partner.outlook.cn
-          server_port: 587
+          server_address: smtp.qq.com
+          server_port: 465
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: OpenMLDB Memory Test
@@ -139,8 +139,8 @@ jobs:
         if: ${{ failure() }}
         uses: dawidd6/action-send-mail@master
         with:
-          server_address: smtp.partner.outlook.cn
-          server_port: 587
+          server_address: smtp.qq.com
+          server_port: 465
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: OpenMLDB Memory Task Test
@@ -183,8 +183,8 @@ jobs:
         if: ${{ failure() }}
         uses: dawidd6/action-send-mail@master
         with:
-          server_address: smtp.partner.outlook.cn
-          server_port: 587
+          server_address: smtp.qq.com
+          server_port: 465
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: OpenMLDB Memory 1 Test
@@ -226,8 +226,8 @@ jobs:
         if: ${{ failure() }}
         uses: dawidd6/action-send-mail@master
         with:
-          server_address: smtp.partner.outlook.cn
-          server_port: 587
+          server_address: smtp.qq.com
+          server_port: 465
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: OpenMLDB SSD Test
@@ -312,8 +312,8 @@ jobs:
         if: ${{ failure() }}
         uses: dawidd6/action-send-mail@master
         with:
-          server_address: smtp.partner.outlook.cn
-          server_port: 587
+          server_address: smtp.qq.com
+          server_port: 465
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: OpenMLDB HDD Test
