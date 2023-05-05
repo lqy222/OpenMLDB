@@ -28,9 +28,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: generate artifact
-        run:
-          mkdir -p testArtifactPath/
-          echo "test" > testArtifactPath/test.txt          
+      - run:  mkdir -p testArtifactPath/
+      - run:  echo "test" > testArtifactPath/test.txt          
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
