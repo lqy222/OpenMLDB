@@ -27,7 +27,6 @@ jobs:
       OS: linux
     steps:
       - uses: actions/checkout@v3
-      - name: generate artifact
       - run:  mkdir -p testArtifactPath/
       - run:  echo "test" > testArtifactPath/test.txt          
       - name: upload artifact
