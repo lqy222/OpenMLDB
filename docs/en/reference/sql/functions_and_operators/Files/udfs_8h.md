@@ -13,6 +13,7 @@ title: udfs/udfs.h
 | **[abs](/openmldb_sql/functions_and_operators/Files/udfs_8h.md#function-abs)**()| <br>Return the absolute value of expr. |
 | **[acos](/openmldb_sql/functions_and_operators/Files/udfs_8h.md#function-acos)**()| <br>Return the arc cosine of expr. |
 | **[add](/openmldb_sql/functions_and_operators/Files/udfs_8h.md#function-add)**()| <br>Compute sum of two arguments. |
+| **[add_months](/openmldb_sql/functions_and_operators/Files/udfs_8h.md#function-add-months)**()| <br>adds an integer months to a given date, returning the resulting date. |
 | **[array_contains](/openmldb_sql/functions_and_operators/Files/udfs_8h.md#function-array-contains)**()| <br>array_contains(array, value) - Returns true if the array contains the value. |
 | **[asin](/openmldb_sql/functions_and_operators/Files/udfs_8h.md#function-asin)**()| <br>Return the arc sine of expr. |
 | **[at](/openmldb_sql/functions_and_operators/Files/udfs_8h.md#function-at)**()| |
@@ -102,7 +103,7 @@ title: udfs/udfs.h
 | **[regexp_like](/openmldb_sql/functions_and_operators/Files/udfs_8h.md#function-regexp-like)**()| <br>pattern match same as RLIKE predicate (based on RE2) |
 | **[replace](/openmldb_sql/functions_and_operators/Files/udfs_8h.md#function-replace)**()| <br>replace(str, search[, replace]) - Replaces all occurrences of `search` with `replace`|
 | **[reverse](/openmldb_sql/functions_and_operators/Files/udfs_8h.md#function-reverse)**()| <br>Returns the reversed given string. |
-| **[round](/openmldb_sql/functions_and_operators/Files/udfs_8h.md#function-round)**()| <br>Return the nearest integer value to expr (in floating-point format), rounding halfway cases away from zero, regardless of the current rounding mode. |
+| **[round](/openmldb_sql/functions_and_operators/Files/udfs_8h.md#function-round)**()| <br>Returns expr rounded to d decimal places using HALF_UP rounding mode. |
 | **[second](/openmldb_sql/functions_and_operators/Files/udfs_8h.md#function-second)**()| <br>Return the second for a timestamp. |
 | **[sin](/openmldb_sql/functions_and_operators/Files/udfs_8h.md#function-sin)**()| <br>Return the sine of expr. |
 | **[size](/openmldb_sql/functions_and_operators/Files/udfs_8h.md#function-size)**()| <br>Get the size of a List (e.g., result of split) |
@@ -273,6 +274,45 @@ select add(1, 2);
 * [`timestamp`, `int32`]
 * [`timestamp`, `int64`]
 * [`timestamp`, `timestamp`] 
+
+### function add_months
+
+```cpp
+add_months()
+```
+
+**Description**:
+
+adds an integer months to a given date, returning the resulting date. 
+
+**Parameters**: 
+
+  * **start_date** Date value to add 
+  * **num_months** Integer value as number of months to add, can be positive or negative
+
+
+**Since**:
+0.8.0
+
+
+The resulting day component will remain the same as that specified in date, unless the resulting month has fewer days than the day component of the given date, in which case the day will be the last day of the resulting month. Returns NULL if given an invalid date, or a NULL argument.
+
+```sql
+
+SELECT add_months('2016-08-31', 1);
+-- 2016-09-30
+SELECT add_months('2016-08-31', -1);
+-- 2016-07-31
+SELECT add_months('2012-01-31', 1);
+-- 2012-02-29
+```
+
+
+**Supported Types**:
+
+* [`date`, `int16`]
+* [`date`, `int32`]
+* [`date`, `int64`] 
 
 ### function array_contains
 
@@ -3286,30 +3326,40 @@ round()
 
 **Description**:
 
-Return the nearest integer value to expr (in floating-point format), rounding halfway cases away from zero, regardless of the current rounding mode. 
+Returns expr rounded to d decimal places using HALF_UP rounding mode. 
 
 **Parameters**: 
 
-  * **expr** 
+  * **numeric_expr** Expression evaluated to numeric 
+  * **d** Integer decimal place, if omitted, default to 0
 
 
 **Since**:
 0.1.0
 
 
+
+When `d` is a positive, `numeric_expr` is rounded to the number of decimal positions specified by `d`. When `d` is a negative , `numeric_expr` is rounded on the left side of the decimal point. Return type is the same as the type first parameter.
+
 Example:
 
 ```sql
 
-SELECT ROUND(1.23);
--- output 1
+SELECT round(1.23);
+-- 1 (double type)
+
+SELECT round(1.23, 1)
+-- 1.2 (double type)
+
+SELECT round(123, -1)
+-- 120 (int32 type)
 ```
 
 
 **Supported Types**:
 
-* [`bool`]
-* [`number`] 
+* [`number`, ...]
+* [`number`, `int32`] 
 
 ### function second
 
