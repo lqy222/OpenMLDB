@@ -20,6 +20,7 @@ on:
 
 jobs:
   greet:
+    name: testName
     runs-on: self-hosted
     env:
       OS: linux
