@@ -21,28 +21,10 @@ on:
 jobs:
   greet:
     runs-on: self-hosted
-    container:
-      image: ghcr.io/4paradigm/hybridsql:latest
     env:
       OS: linux
     steps:
       - uses: actions/checkout@v3
-      - run:  mkdir -p testArtifactPath/
-      - run:  echo "test" > testArtifactPath/test.txt          
-      - name: upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: openmldb-linux
-          path: testArtifactPath/
-      - name: Send Email
-        uses: dawidd6/action-send-mail@master
-        with:
-          server_address: smtp.qq.com
-          server_port: 465
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: OpenMLDB Memory Task Test
-          body: OpenMLDB Memory Task Test Failed
-          to: ${{ secrets.MAIL_TO }}
-          from: GitHub Actions
-          content_type: text/plain
+      - run:  mkdir testPath/
+      - run:  echo github.job > testArtifactPath/test.txt          
+
