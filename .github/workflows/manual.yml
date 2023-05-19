@@ -26,5 +26,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run:  mkdir testPath/
-      - run:  echo github.job > testPath/test.txt          
+      - run:  echo ${{ github.job }} > testPath/test.txt          
 
