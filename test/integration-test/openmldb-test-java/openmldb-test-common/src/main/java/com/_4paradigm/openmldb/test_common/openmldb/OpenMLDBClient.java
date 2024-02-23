@@ -41,6 +41,7 @@ public class OpenMLDBClient {
         option.setEnableDebug(true);
         option.setSessionTimeout(1000000);
         option.setRequestTimeout(1000000);
+        option.setZkCert("a");
         log.info("zkCluster {}, zkPath {}", option.getZkCluster(), option.getZkPath());
         try {
             executor = new SqlClusterExecutor(option);

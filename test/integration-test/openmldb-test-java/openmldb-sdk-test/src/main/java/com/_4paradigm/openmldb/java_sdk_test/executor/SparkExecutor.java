@@ -14,83 +14,92 @@
  * limitations under the License.
  */
 
-package com._4paradigm.openmldb.test_common.case_test.sdk;
+ package com._4paradigm.openmldb.java_sdk_test.executor;
 
 
-import com._4paradigm.openmldb.test_common.model.InputDesc;
-import com._4paradigm.openmldb.test_common.model.SQLCase;
-import com._4paradigm.openmldb.test_common.provider.Yaml;
-import org.testng.Assert;
+ import com._4paradigm.openmldb.java_sdk_test.checker.Checker;
+ import com._4paradigm.openmldb.java_sdk_test.checker.CheckerStrategy;
+ import com._4paradigm.openmldb.java_sdk_test.checker.DiffVersionChecker;
+ import com._4paradigm.openmldb.java_sdk_test.common.OpenMLDBConfig;
+ import com._4paradigm.openmldb.test_common.bean.OpenMLDBResult;
+ import com._4paradigm.openmldb.test_common.openmldb.SDKClient;
+ import com._4paradigm.openmldb.test_common.util.SDKUtil;
+ import com._4paradigm.openmldb.sdk.SqlExecutor;
+ import com._4paradigm.openmldb.test_common.model.InputDesc;
+ import com._4paradigm.openmldb.test_common.model.SQLCase;
+ import com._4paradigm.openmldb.test_common.model.SQLCaseType;
+ import com._4paradigm.openmldb.test_common.util.SQLUtil;
+ import com._4paradigm.qa.openmldb_deploy.bean.OpenMLDBInfo;
+ import org.apache.spark.sql.SparkSession;
+ import lombok.extern.slf4j.Slf4j;
+ import org.apache.commons.collections4.CollectionUtils;
+ import org.apache.commons.collections4.MapUtils;
+ import org.apache.commons.lang3.StringUtils;
+ import com._4paradigm.openmldb.batch.api.OpenmldbSession;
+ import com._4paradigm.openmldb.test_common.common.BaseExecutor;
+ import com._4paradigm.openmldb.test_common.provider.YamlUtil;
+ import com._4paradigm.openmldb.test_common.util.Tool;
+ import org.apache.spark.sql.Row;
+ import org.apache.spark.sql.RowFactory;
+ import org.apache.spark.sql.Dataset;
+ import org.apache.spark.sql.types.StructType;
+ import org.apache.spark.sql.types.DataTypes;
+ import org.apache.spark.sql.types.StructField;
+ import com._4paradigm.openmldb.test_common.util.RowsSort;
+ import java.util.List;
+ import java.util.Map;
+ import java.util.Objects;
+ import java.util.ArrayList;
+ import java.util.stream.Collectors;
+ import java.text.DateFormat;
+ import java.text.SimpleDateFormat;
+ import org.testng.Assert;
+ 
+ @Slf4j
+ public abstract class SparkExecutor extends BaseExecutor{
+    public SparkExecutor(SQLCase sqlCase) {
+        super(sqlCase);
+    }
 
-import org.testng.annotations.Test;
-
-import com._4paradigm.openmldb.batch.api.OpenmldbSession;
-
-import org.apache.spark.sql.SparkSession;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.RowFactory;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.types.StructType;
-import org.apache.spark.sql.types.DataTypes;
-import org.apache.spark.sql.types.StructField;
-import java.util.List;
-import java.util.ArrayList;
-
-import com._4paradigm.openmldb.test_common.common.BaseTest;
-import com._4paradigm.openmldb.test_common.util.RowsSort;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import com._4paradigm.openmldb.test_common.provider.YamlUtil;
-import com._4paradigm.openmldb.test_common.util.Tool;
-import com._4paradigm.qa.openmldb_deploy.bean.OpenMLDBInfo;
-import org.testng.annotations.AfterTest;
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
-public class SQLCaseTest {
     protected OpenMLDBInfo openMLDBInfo= YamlUtil.getObject(Tool.openMLDBDir().getAbsolutePath()+"/out/openmldb_info.yaml",OpenMLDBInfo.class);
     protected String defaultDb = "db1";
+    public List<Row> realRow = null;
+    public List<Row> expectRow = null;
     public SparkSession ss = SparkSession
     .builder()
     .master("local[4]")
-    .config("openmldb.zk.cluster", "node-4:22172")
-    .config("openmldb.zk.root.path","/openmldb-unionall-0.8.3-11301637")
+    .config("openmldb.zk.cluster", openMLDBInfo.getZk_cluster())
+    .config("openmldb.zk.root.path",openMLDBInfo.getZk_root_path())
     .config("openmldb.default.db",defaultDb)
     .getOrCreate();
     public OpenmldbSession om = new OpenmldbSession(ss);
-    
 
-    @Test(dataProvider = "getCase",dataProviderClass = BaseTest.class)
-    //@Yaml(filePaths = "integration_test/tmp/")
-   //@Yaml(filePaths = "integration_test/expression/")
-   //@Yaml(filePaths = "integration_test/function/")
-   //@Yaml(filePaths = "integration_test/cluster/")
-   //@Yaml(filePaths = "integration_test/join/")
-    //@Yaml(filePaths = "integration_test/select/")
-   // @Yaml(filePaths = "integration_test/test_index_optimized.yaml")
-    @Yaml(filePaths = "integration_test/long_window/test_xxx_where.yaml") //longWindow: w1:2s参数怎么放进去
-    //@Yaml(filePaths = "integration_test/multiple_databases/")
-    public void testSqlFormat(SQLCase sqlCase) {
-        log.info(sqlCase.getDesc());
+    @Override
+    public boolean verify(){
         if(null != sqlCase.getMode() && sqlCase.getMode().contains("request-unsupport")){
-            return ;
+            return false;
         }
         if(null != sqlCase.getMode() && sqlCase.getMode().contains("cluster-unsupport")){
-            return;
+            return false;
         }
         if(null != sqlCase.getMode() && sqlCase.getMode().contains("hybridse-only")){
-            return ;
+            return false;
         }
         if(null != sqlCase.getMode() && sqlCase.getMode().contains("batch-unsupport")){
-            return ;
+            return false;
         }
         if(null != sqlCase.getMode() && sqlCase.getMode().contains("rtidb-unsupport")){
-            return ;
+            return false;
         }
         if(null != sqlCase.getMode() && sqlCase.getMode().contains("offline-unsupport")){
-            return ;
-        }
+            return false;
+        }        
+
+        return true;
+    }
+
+    @Override
+    public void prepare() {
         List<InputDesc> tables = sqlCase.getInputs();
         om.disableSparkLogs();
         for (InputDesc table :tables){
@@ -98,33 +107,24 @@ public class SQLCaseTest {
             om.registerTable(defaultDb, table.getName(), inputdf);
             om.registerTableInOpenmldbSession(defaultDb, table.getName(), inputdf);
          //   SparkUtil. .addIndexColumn(ss, inputdf, defaultDb, defaultDb)
-        }       
-        List<Row> realRow = null;
+        }  
+    }
+
+    @Override
+    public void execute(){
         try{
             Dataset<Row> df1 = om.openmldbSql(sqlCase.getSql()).sparkDf();
-        //    if(sqlCase.getExpect().getOrder()!=null){df1.orderBy(sqlCase.getExpect().getOrder());};
             realRow = df1.collectAsList();
         } catch (Exception e) {
             log.info(sqlCase.getDesc()+e.toString());
         }
         Dataset<Row> outputdf = WriteToSpark(sqlCase.getExpect().getRows(),sqlCase.getExpect().getColumns(),"output",sqlCase);
-        //if(sqlCase.getExpect().getOrder()!=null){outputdf.orderBy(sqlCase.getExpect().getOrder());};
-        List<Row> expectRow = outputdf.collectAsList();
-        if (!sqlCase.getExpect().getSuccess()){ Assert.assertNull(realRow,sqlCase.getDesc()+" is not null");}
-        else {
-            Compare(realRow,expectRow,sqlCase);
-        }
-            
+        expectRow = outputdf.collectAsList();
     }
 
-    @AfterTest
-    public void tearDown(){
-        om.stop();
-        ss.stop();
-        om.close();
-        ss.close();
-    }
-    public void Compare(List<Row> realRow, List<Row> expectRow,SQLCase sqlCase){
+
+    @Override
+    public void check(){
         if (null==realRow){
             Assert.assertNull(expectRow,sqlCase.getDesc()+" is not null");
             return;
@@ -155,9 +155,15 @@ public class SQLCaseTest {
             }
 
         }
-        return;
     }
 
+    @Override
+    public void tearDown(){
+        om.stop();
+        ss.stop();
+        om.close();
+        ss.close();
+    }
 
     public Dataset<Row> WriteToSpark(List<List<Object>> rows, List<String> schemas,String tableName,SQLCase sqlCase){
         List<StructField> schemaList = new ArrayList<StructField>();
@@ -303,4 +309,5 @@ public class SQLCaseTest {
 
     }
 
-}
+ }
+ 

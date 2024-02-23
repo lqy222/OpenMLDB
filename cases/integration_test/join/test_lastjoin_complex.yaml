@@ -803,6 +803,7 @@ cases:
 
   - id: 13-2
     desc: t1 join (t2 join t3)-key和ts不是来自同一个主表
+    mode: offline-unsupport
     inputs:
       -
         columns : ["id int","c1 string","c3 int","c4 bigint","c5 float","c6 double","c7 timestamp","c8 date"]

@@ -409,6 +409,7 @@ cases:
   -
     id: 10
     desc: 长窗口xxx_where，第二个参数使用bool列
+    mode: offline-unsupport
     longWindow: w1:2s
     inputs:
       -
@@ -638,6 +639,7 @@ cases:
           - [5,"aa",22]
   -
     id: 17
+    mode: offline-unsupport
     desc: 长窗口xxx_where，第二个参数使用and
     longWindow: w1:2s
     inputs:
@@ -660,6 +662,7 @@ cases:
       msg: fail
   -
     id: 18
+    mode: offline-unsupport
     desc: 长窗口xxx_where，第二个参数使用两个列
     longWindow: w1:2s
     inputs:
@@ -682,6 +685,7 @@ cases:
       msg: fail
   -
     id: 19
+    mode: offline-unsupport
     desc: 长窗口xxx_where，第二个参数使用嵌套
     longWindow: w1:2s
     inputs:
@@ -1038,6 +1042,7 @@ cases:
       msg: fail
   -
     id: 27
+    mode: offline-unsupport
     desc: 长窗口xxx_where，第二个参数类型是date
     longWindow: w1:2s
     inputs:
@@ -1112,6 +1117,7 @@ cases:
           - [5,"aa",22]
   -
     id: 29
+    mode: offline-unsupport
     desc: 长窗口xxx_where，w1:2
     longWindow: w1:2
     inputs:
@@ -1134,6 +1140,7 @@ cases:
       msg: fail
   -
     id: 30
+    mode: offline-unsupport
     desc: 长窗口xxx_where，磁盘表
     longWindow: w1:2s
     inputs:

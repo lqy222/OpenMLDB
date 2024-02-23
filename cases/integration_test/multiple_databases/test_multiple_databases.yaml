@@ -206,6 +206,7 @@ cases:
         - ["cc"]
   - id: 8
     desc: 子查询后的表使用其他库
+    mode: offline-unsupport
     db: db
     inputs:
       -
